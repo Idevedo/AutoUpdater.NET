@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Windows.Forms;
+using Microsoft.Web.WebView2.Core;
 using Microsoft.Win32;
 
 namespace AutoUpdaterDotNET
@@ -16,7 +17,7 @@ namespace AutoUpdaterDotNET
         {
             _args = args;
             InitializeComponent();
-            UseLatestIE();
+            InitializeBrowserControl();
             buttonSkip.Visible = AutoUpdater.ShowSkipButton;
             buttonRemindLater.Visible = AutoUpdater.ShowRemindLaterButton;
             var resources = new System.ComponentModel.ComponentResourceManager(typeof(UpdateForm));
@@ -32,6 +33,86 @@ namespace AutoUpdaterDotNET
             {
                 ControlBox = false;
             }
+        }
+
+        private async void InitializeBrowserControl()
+        {
+            if (string.IsNullOrEmpty(_args.ChangelogURL))
+            {
+                var reduceHeight = labelReleaseNotes.Height + webBrowser.Height;
+                labelReleaseNotes.Hide();
+                webBrowser.Hide();
+                webView2.Hide();
+                Height -= reduceHeight;
+            }
+            else
+            {
+                bool webView2RuntimeFound = false;
+                try
+                {
+                    string availableBrowserVersion = CoreWebView2Environment.GetAvailableBrowserVersionString();
+                    string requiredMinBrowserVersion = "86.0.616.0";
+                    if (!string.IsNullOrEmpty(availableBrowserVersion)
+                        && CoreWebView2Environment.CompareBrowserVersions(availableBrowserVersion, requiredMinBrowserVersion) >= 0)
+                    {
+                        webView2RuntimeFound = true;
+                    }
+                }
+                catch (WebView2RuntimeNotFoundException)
+                {
+                    // ignored
+                }
+                if (webView2RuntimeFound)
+                {
+                    webBrowser.Hide();
+                    webView2.CoreWebView2InitializationCompleted += WebView_CoreWebView2InitializationCompleted;
+                    await webView2.EnsureCoreWebView2Async(await CoreWebView2Environment.CreateAsync(null, Path.GetTempPath()));
+                }
+                else
+                {
+                    UseLatestIE();
+                    if (null != AutoUpdater.BasicAuthChangeLog)
+                    {
+                        webBrowser.Navigate(_args.ChangelogURL, "", null,
+                            $"Authorization: {AutoUpdater.BasicAuthChangeLog}");
+                    }
+                    else
+                    {
+                        webBrowser.Navigate(_args.ChangelogURL);
+                    }
+                }
+            }
+        }
+
+        private void WebView_CoreWebView2InitializationCompleted(object sender, CoreWebView2InitializationCompletedEventArgs e)
+        {
+            if (!e.IsSuccess)
+            {
+                if (AutoUpdater.ReportErrors)
+                {
+                    MessageBox.Show(e.InitializationException.Message, e.InitializationException.GetType().ToString(), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                return;
+            }
+
+            webView2.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
+            webView2.CoreWebView2.Settings.IsStatusBarEnabled = false;
+            webView2.CoreWebView2.Settings.AreDevToolsEnabled = Debugger.IsAttached;
+            webView2.CoreWebView2.Settings.UserAgent = AutoUpdater.GetUserAgent();
+            webView2.CoreWebView2.Profile.ClearBrowsingDataAsync();
+            webView2.Show();
+            webView2.BringToFront();
+            if (null != AutoUpdater.BasicAuthChangeLog)
+            {
+                webView2.CoreWebView2.BasicAuthenticationRequested += delegate (
+                    object sender,
+                    CoreWebView2BasicAuthenticationRequestedEventArgs args)
+                    {
+                        args.Response.UserName = ((BasicAuthentication)AutoUpdater.BasicAuthChangeLog).Username;
+                        args.Response.Password = ((BasicAuthentication)AutoUpdater.BasicAuthChangeLog).Password;
+                    };
+            }
+            webView2.CoreWebView2.Navigate(_args.ChangelogURL);
         }
 
         private void UseLatestIE()
@@ -79,27 +160,7 @@ namespace AutoUpdaterDotNET
 
         private void UpdateFormLoad(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(_args.ChangelogURL))
-            {
-                var reduceHeight = labelReleaseNotes.Height + webBrowser.Height;
-                labelReleaseNotes.Hide();
-                webBrowser.Hide();
-                Height -= reduceHeight;
-            }
-            else
-            {
-                if (null != AutoUpdater.BasicAuthChangeLog)
-                {
-                    webBrowser.Navigate(_args.ChangelogURL, "", null,
-                        $"Authorization: {AutoUpdater.BasicAuthChangeLog}");
-                }
-                else
-                {
-                    webBrowser.Navigate(_args.ChangelogURL);
-                }
-            }
-
-            var labelSize = new Size(Width - 110, 0);
+            var labelSize = new Size(webBrowser.Width, 0);
             labelDescription.MaximumSize = labelUpdate.MaximumSize = labelSize;
         }
 

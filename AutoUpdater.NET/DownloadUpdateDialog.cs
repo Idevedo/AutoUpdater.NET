@@ -102,7 +102,7 @@ namespace AutoUpdaterDotNET
                 }
 
                 ContentDisposition contentDisposition = null;
-                if (!String.IsNullOrWhiteSpace(_webClient.ResponseHeaders?["Content-Disposition"]))
+                if (!string.IsNullOrWhiteSpace(_webClient.ResponseHeaders?["Content-Disposition"]))
                 {
                     contentDisposition = new ContentDisposition(_webClient.ResponseHeaders["Content-Disposition"]);
                 }
@@ -154,16 +154,22 @@ namespace AutoUpdaterDotNET
                     }
 
                     StringBuilder arguments =
-                        new StringBuilder($"\"{tempPath}\" \"{extractionPath}\" \"{executablePath}\"");
+                        new StringBuilder($"--input \"{tempPath}\" --output \"{extractionPath}\" --executable \"{executablePath}\"");
+
+                    if (AutoUpdater.ClearAppDirectory)
+                    {
+                        arguments.Append(" --clear");
+                    }
+                    
                     string[] args = Environment.GetCommandLineArgs();
                     for (int i = 1; i < args.Length; i++)
                     {
                         if (i.Equals(1))
                         {
-                            arguments.Append(" \"");
+                            arguments.Append(" --args \"");
                         }
 
-                        arguments.Append(args[i]);
+                        arguments.Append($"\"{args[i]}\"");
                         arguments.Append(i.Equals(args.Length - 1) ? "\"" : " ");
                     }
 

@@ -124,7 +124,12 @@ namespace AutoUpdaterTest
             //Uncomment following line if you don't want the library to determine the installed version from assembly.
             //AutoUpdater.InstalledVersion = new Version("2.0.0.1");
 
-            AutoUpdater.Start("https://rbsoft.org/updates/AutoUpdaterTest.xml");
+            //Uncomment following line if you want to clear application directory before update zip is extracted.
+            //AutoUpdater.ClearAppDirectory = true;
+
+            //AutoUpdater.Start("https://rbsoft.org/updates/AutoUpdaterTest.xml");
+
+            MessageBox.Show(string.Join(Environment.NewLine, Environment.GetCommandLineArgs()));
         }
 
         private void AutoUpdater_ApplicationExitEvent()
@@ -169,8 +174,8 @@ namespace AutoUpdaterTest
                         dialogResult =
                             MessageBox.Show(
                                 $@"There is new version {args.CurrentVersion} available. You are using version {
-                                        args.InstalledVersion
-                                    }. This is required update. Press Ok to begin updating the application.",
+                                    args.InstalledVersion
+                                }. This is required update. Press Ok to begin updating the application.",
                                 @"Update Available",
                                 MessageBoxButtons.OK,
                                 MessageBoxIcon.Information);
@@ -180,8 +185,8 @@ namespace AutoUpdaterTest
                         dialogResult =
                             MessageBox.Show(
                                 $@"There is new version {args.CurrentVersion} available. You are using version {
-                                        args.InstalledVersion
-                                    }. Do you want to update the application now?", @"Update Available",
+                                    args.InstalledVersion
+                                }. Do you want to update the application now?", @"Update Available",
                                 MessageBoxButtons.YesNo,
                                 MessageBoxIcon.Information);
                     }
@@ -240,7 +245,7 @@ namespace AutoUpdaterTest
             //    AutoUpdater.Start("https://rbsoft.org/updates/AutoUpdaterTest.xml");
             //}
 
-            AutoUpdater.Mandatory = true;
+            AutoUpdater.ClearAppDirectory = false;
             AutoUpdater.Start("https://rbsoft.org/updates/AutoUpdaterTest.xml");
         }
     }

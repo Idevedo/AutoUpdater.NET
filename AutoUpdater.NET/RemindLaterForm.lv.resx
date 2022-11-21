@@ -112,25 +112,45 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="CurrentFileExtracting" xml:space="preserve">
-    <value>Extracting {0}</value>
+  <data name="radioButtonNo.Text" xml:space="preserve">
+    <value>Nē, lejupielādēt atjauninājumus tagad (Ieteicams)</value>
   </data>
-  <data name="FileStillInUseCaption" xml:space="preserve">
-    <value>Unable to update the file!</value>
+  <data name="comboBoxRemindLater.Items" xml:space="preserve">
+    <value>Pēc 30 minūtēm</value>
   </data>
-  <data name="FileStillInUseMessage" xml:space="preserve">
-    <value>{0} is still open and it is using "{1}". Please close the process manually and press Retry.</value>
+  <data name="comboBoxRemindLater.Items1" xml:space="preserve">
+    <value>Pēc 12 stundām</value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="ZipExtractor" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\ZipExtractor.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="comboBoxRemindLater.Items2" xml:space="preserve">
+    <value>Pēc 1 dienas</value>
   </data>
-  <data name="Removing" xml:space="preserve">
-    <value>Removing {0}</value>
+  <data name="comboBoxRemindLater.Items3" xml:space="preserve">
+    <value>Pēc 2 dienām</value>
+  </data>
+  <data name="comboBoxRemindLater.Items4" xml:space="preserve">
+    <value>Pēc 4 dienām</value>
+  </data>
+  <data name="comboBoxRemindLater.Items5" xml:space="preserve">
+    <value>Pēc 8 dienām</value>
+  </data>
+  <data name="comboBoxRemindLater.Items6" xml:space="preserve">
+    <value>Pēc 10 dienām</value>
+  </data>
+  <data name="radioButtonYes.Text" xml:space="preserve">
+    <value>Jā, lūdzu atgādiniet man vēlāk:</value>
+  </data>
+  <data name="labelDescription.Text" xml:space="preserve">
+    <value>Jums vajadzētu lejupielādēt atjauninājumus tagad. Tas aizņems tikai pāris minūtes, atkarība no jūsu interneta savienojuma ātrumu, un nodrošinās jūs ar jaunāko programmatūras versiju.</value>
+  </data>
+  <data name="labelTitle.Text" xml:space="preserve">
+    <value>Vai jūs vēlaties lejupielādēt atjauninājumus vēlāk?</value>
+  </data>
+  <data name="$this.Text" xml:space="preserve">
+    <value>Atgādināt vēlāk par atjauninājumu</value>
   </data>
 </root>

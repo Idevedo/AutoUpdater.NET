@@ -161,6 +161,11 @@ namespace AutoUpdaterDotNET
         /// </summary>
         public static bool Synchronous = false;
 
+        /// <summary>
+        ///     Set this to true if you want to clear application directory before extracting update.
+        /// </summary>
+        public static bool ClearAppDirectory = false;
+
         ///<summary>
         ///     Set this to true if you want to ignore previously assigned Remind Later and Skip settings. It will also hide Remind Later and Skip buttons.
         /// </summary>
@@ -288,7 +293,12 @@ namespace AutoUpdaterDotNET
                     {
                         var result = CheckUpdate(assembly);
 
-                        Running = StartUpdate(result);
+                        if (StartUpdate(result))
+                        {
+                            return;
+                        }
+
+                        Running = false;
                     }
                     catch (Exception exception)
                     {
@@ -321,9 +331,9 @@ namespace AutoUpdaterDotNET
                                         return;
                                     }
                                 }
-                            }
 
-                            Running = false;
+                                Running = false;
+                            }
                         };
 
                         backgroundWorker.RunWorkerAsync(assembly);
@@ -377,7 +387,7 @@ namespace AutoUpdaterDotNET
                 throw new MissingFieldException();
             }
 
-            args.InstalledVersion = InstalledVersion != null ? InstalledVersion : mainAssembly.GetName().Version;
+            args.InstalledVersion = InstalledVersion ?? mainAssembly.GetName().Version;
             args.IsUpdateAvailable = new Version(args.CurrentVersion) > args.InstalledVersion;
 
             if (!Mandatory)
@@ -508,6 +518,8 @@ namespace AutoUpdaterDotNET
                     }
                 }
             }
+
+            Running = false;
         }
 
         /// <summary>
@@ -593,7 +605,7 @@ namespace AutoUpdaterDotNET
 
             _remindLaterTimer = new System.Timers.Timer
             {
-                Interval = (int) timeSpan.TotalMilliseconds,
+                Interval = Math.Max(1, timeSpan.TotalMilliseconds),
                 AutoReset = false
             };
 
